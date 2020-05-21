@@ -11,10 +11,10 @@ const ToDoListContainer = styled.section`
   width: 600px;
   max-height: 80%;
   ${media.tablet`
-     width: 75%;
+    width: 75%;
    `}
   ${media.phone`
-     width: 95%;
+    width: 95%;
     max-height: 100%;
    `}
 `;
