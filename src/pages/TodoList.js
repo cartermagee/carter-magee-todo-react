@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import ListItem from '../components/ListItem';
 
 const ListItemsContainer = styled.div`
-  border: 1px solid red;
   display: grid;
   overflow: scroll;
 `;
