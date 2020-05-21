@@ -11,18 +11,33 @@ export const textColor = theme('mode', {
 });
 
 export const itemBackground = theme('mode', {
-  light: '#eee',
+  light: '#fff',
+  // light: '#eee',
   dark: '#333333',
+});
+export const itemBackgroundHover = theme('mode', {
+  light: '#F1F3F5',
+  dark: 'rgb(52, 58, 64)',
 });
 
 export const inputBackground = theme('mode', {
+  light: '#fff',
+  dark: 'rgb(52, 58, 64)',
+});
+
+export const inputBackgroundFocus = theme('mode', {
   light: '#eee',
+  dark: 'rgb(52, 58, 64)',
+});
+
+export const inputShadow = theme('mode', {
+  light: 'rgba(33, 37, 41, 0.12)',
   dark: '#424243',
 });
 
 export const submitButtonColor = theme('mode', {
-  light: '#626980',
-  dark: '#2D2D30',
+  light: '#2E64EA',
+  dark: 'rebeccapurple',
 });
 
 export const backgroundImage = theme('mode', {
@@ -43,5 +58,7 @@ material white #fff
 material dark background #212121
 material dark foreground #333333
 material button #626980
+
+emotion dark rgb(52, 58, 64)
  */
 // background: `url(${backgroundMain}) center / cover no-repeat fixed`,

@@ -1,30 +1,63 @@
+import uid from 'uid';
+
 export const sampleData = [
   {
-    id: 1,
+    id: uid(),
     color: 'red',
     complete: false,
     name: 'do the dishes',
     tags: ['kitchen', 'morning'],
   },
   {
-    id: 2,
-    color: 'red',
+    id: uid(),
+    color: 'green',
     complete: true,
-    name: 'trash',
+    name: 'take out the trash',
     tags: ['kitchen', 'morning', 'outside'],
   },
   {
-    id: 3,
-    color: 'green',
+    id: uid(),
+    color: 'blue',
     complete: false,
     name: 'shower',
     tags: ['bathroom', 'morning'],
   },
   {
-    id: 4,
-    color: 'blue',
-    complete: false,
-    name: 'litter box',
+    id: uid(),
+    color: 'darkgoldenrod',
+    complete: true,
+    name: 'clean litter box',
     tags: ['bathroom', 'pets'],
   },
-]
+];
+
+export const sampleDataObjects = {
+  0: {
+    id: uid(),
+    color: 'red',
+    complete: false,
+    name: 'do the dishes',
+    tags: ['kitchen', 'morning'],
+  },
+  1: {
+    id: uid(),
+    color: 'green',
+    complete: true,
+    name: 'take out the trash',
+    tags: ['kitchen', 'morning', 'outside'],
+  },
+  2: {
+    id: uid(),
+    color: 'blue',
+    complete: false,
+    name: 'shower',
+    tags: ['bathroom', 'morning'],
+  },
+  3: {
+    id: uid(),
+    color: 'darkgoldenrod',
+    complete: true,
+    name: 'clean litter box',
+    tags: ['bathroom', 'pets'],
+  },
+};

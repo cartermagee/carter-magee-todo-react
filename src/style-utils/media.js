@@ -6,7 +6,7 @@ const sizes = {
   tablet: 768,
   phone: 576,
 };
-// I found this helper when i started using styled components years ago. I'll have to find the source again!
+
 export const media = Object.keys(sizes).reduce((accumulator, label) => {
   const emSize = sizes[label] / 18;
   accumulator[label] = (...args) => css`

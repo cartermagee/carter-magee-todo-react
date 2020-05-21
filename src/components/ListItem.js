@@ -1,40 +1,39 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { CheckSquare, Square, X } from 'react-feather';
-import { textColor, itemBackground } from '../style-utils/theme';
+import { CheckSquare, Square, X, Tag } from 'react-feather';
+import {
+  textColor,
+  itemBackground,
+  itemBackgroundHover,
+} from '../style-utils/theme';
 
-const Item = styled.div`
+const ListItemContainer = styled.div`
   align-items: center;
-  background: linear-gradient(
-    135deg,
-    ${itemBackground} 30%,
-    ${({ color }) => color || '#fda085'} 100%
-  );
-  border-radius: 5px;
+  background: ${itemBackground};
   color: ${textColor};
   cursor: grab;
   display: grid;
-  grid-template-columns: 1fr 3fr auto;
+  font-weight: 500;
+  font-size: 20px;
+  grid-template-columns: 1fr 4fr 1fr;
   height: 90px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
   width: 100%;
+  &:hover {
+    background: ${itemBackgroundHover};
+  }
 `;
 
-const Checkbox = styled.button`
+const Checkbox = styled.button.attrs({
+  type: 'button',
+})`
   background: none;
-  border: none;
   color: ${textColor};
-  cursor: pointer;
-  margin: 0;
-  padding: 0;
-  width: fit-content;
-  outline: none;
-  justify-self: center;
 `;
 const Task = styled.p`
   cursor: text;
+  font-style: ${({ complete }) => complete && 'italic'};
+  text-decoration: ${({ complete }) => complete && 'line-through'};
   width: fit-content;
   &:hover {
     text-decoration: underline;
@@ -46,37 +45,75 @@ const OptionsContainer = styled.div`
   display: grid;
   height: 90%;
   justify-items: center;
-  margin-right: 7px;
   width: 50px;
+  justify-self: center;
+  & > * {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    border-radius: 5px;
+    width: 100%;
+    color: ${textColor};
+    background: inherit;
+    &:hover {
+      filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.5));
+    }
+  }
 `;
-const OptionsBtn = styled.button`
-  background: ${itemBackground};
-  border-radius: 5px;
-  color: ${textColor};
-  padding: 5px;
-  width: 100%;
+const OptionsBtn = styled.button.attrs({
+  type: 'button',
+})``;
+const ColorIndicator = styled.div`
+  width: 30px;
+  height: 20px;
+  border-radius: inherit;
+  background: ${({ color }) => color || 'none'};
+  border: 1px solid ${({ color }) => (color ? 'transparent' : textColor)};
+  font-size: 8px;
+  display: grid;
+  justify-items: center;
+  align-items: center;
 `;
-export default function ListItem({ name, complete, color = {}, tags = {} }) {
+export default function ListItem({
+  complete = false,
+  name = '',
+  color = '',
+  id = '',
+  tags = [],
+  deleteTodo,
+}) {
+  const confirmDelete = () => {
+    if (window.confirm('Are you sure you wish to delete this item?')) {
+      console.log(`deleting: ${name}`);
+      deleteTodo(id);
+    }
+  };
+
   return (
-    <Item color={color}>
-      <Checkbox type="button">
-        {complete ? <CheckSquare /> : <Square />}
-      </Checkbox>
+    <ListItemContainer>
+      <Checkbox>{complete ? <CheckSquare /> : <Square />}</Checkbox>
       <span>
-        <Task>{name}</Task>
+        <Task complete={complete}>{name}</Task>
       </span>
       <OptionsContainer>
-        <X cursor="pointer" />
-        <OptionsBtn>{color}</OptionsBtn>
-        <OptionsBtn>tags</OptionsBtn>
+        <OptionsBtn onClick={confirmDelete}>
+          <X />
+        </OptionsBtn>
+        <OptionsBtn>
+          <ColorIndicator color={color}>{!color && <>(none)</>}</ColorIndicator>
+        </OptionsBtn>
+        <OptionsBtn>
+          <Tag />
+        </OptionsBtn>
       </OptionsContainer>
-    </Item>
+    </ListItemContainer>
   );
 }
 
 ListItem.propTypes = {
-  name: PropTypes.string.isRequired,
   complete: PropTypes.bool.isRequired,
   color: PropTypes.string,
+  name: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string),
+  deleteTodo: PropTypes.func,
 };

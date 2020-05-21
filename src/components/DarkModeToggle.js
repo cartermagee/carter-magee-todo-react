@@ -4,6 +4,7 @@ import styled, { withTheme } from 'styled-components';
 import { useSpring, animated, config } from 'react-spring';
 import { Moon, Sun } from 'react-feather';
 import { useTheme } from '../style-utils/ThemeContext';
+import { media } from '../style-utils/media';
 
 const AnimatedToggleBtn = styled(animated.button)`
   align-items: center;
@@ -13,25 +14,28 @@ const AnimatedToggleBtn = styled(animated.button)`
   color: #fff;
   cursor: pointer;
   display: flex;
-  font-size: 1em;
+  font-size: 16px;
   justify-content: space-around;
   outline: none;
   position: absolute;
   right: 0px;
   top: 5px;
+  z-index: 3;
   & > * {
     margin: 5px;
   }
+  ${media.phone`
+    display: none;
+  `}
 `;
 
 function DarkModeToggle({ theme }) {
-  // consumes theme
   const themeToggle = useTheme();
   const [showToggle, setShowToggle] = useState(false);
-  // react-spring animates based on state
+
   const slide = useSpring({
     config: config.stiff,
-    width: showToggle ? '13rem' : '2.625rem',
+    width: showToggle ? '12rem' : '2.625rem',
   });
 
   const fade = useSpring({
@@ -40,11 +44,11 @@ function DarkModeToggle({ theme }) {
     opacity: showToggle ? 1 : 0,
     whiteSpace: 'nowrap',
   });
-  // tells springs to animate
+
   const handleHover = () => {
     setShowToggle(!showToggle);
   };
-  // calls theme toggle
+
   const handleClick = () => {
     themeToggle.toggle();
   };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import PropTypes from 'prop-types';
 import { textColor, backgroundImage } from './theme';
@@ -21,21 +21,20 @@ const Wrapper = styled.main`
    `}
 `;
 
-const ThemeToggleContext = React.createContext();
-// exports functionality to DarkModeToggle
-export const useTheme = () => React.useContext(ThemeToggleContext);
+const ThemeToggleContext = createContext();
+
+export const useTheme = () => useContext(ThemeToggleContext);
 
 export const MyThemeProvider = ({ children }) => {
-  // sets dark mode if user's browser/system is set to dark
+  // const [themeState, setThemeState] = useState({ mode: 'light' });
   const [themeState, setThemeState] = useState({
     mode:
-      (window.matchMedia &&
+      window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
-        : 'light') || 'light',
+        : 'light',
   });
 
-  // watches for system changes
   useEffect(() => {
     window
       .matchMedia('(prefers-color-scheme: dark)')
