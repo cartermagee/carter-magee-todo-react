@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import { MyThemeProvider } from './style-utils/ThemeContext';
 import GlobalStyle from './style-utils/globalStyles';
 
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <>
+  <MyThemeProvider>
     <GlobalStyle />
     <App />
-  </>,
+  </MyThemeProvider>,
   document.getElementById('root')
 );
 

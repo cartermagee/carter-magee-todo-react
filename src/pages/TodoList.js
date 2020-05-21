@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+// import { useSpring, animated, config } from 'react-spring';
 import ListItem from '../components/ListItem';
 
 const ListItemsContainer = styled.div`
-  border: 1px solid red;
   display: grid;
   overflow: scroll;
 `;
