@@ -75,12 +75,13 @@ const ColorIndicator = styled.div`
   align-items: center;
 `;
 export default function ListItem({
-  complete = false,
   name = '',
-  color = '',
+  complete,
+  color = {},
   id = '',
-  tags = [],
+  tags = {},
   deleteTodo,
+  handleChecked,
 }) {
   const confirmDelete = () => {
     if (window.confirm('Are you sure you wish to delete this item?')) {
@@ -88,10 +89,15 @@ export default function ListItem({
       deleteTodo(id);
     }
   };
+  const handleCheck = () => {
+    handleChecked(id, complete);
+  };
 
   return (
     <ListItemContainer>
-      <Checkbox>{complete ? <CheckSquare /> : <Square />}</Checkbox>
+      <Checkbox onClick={handleCheck}>
+        {complete ? <CheckSquare /> : <Square />}
+      </Checkbox>
       <span>
         <Task complete={complete}>{name}</Task>
       </span>
@@ -111,9 +117,11 @@ export default function ListItem({
 }
 
 ListItem.propTypes = {
+  name: PropTypes.string.isRequired,
   complete: PropTypes.bool.isRequired,
   color: PropTypes.string,
-  name: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string),
   deleteTodo: PropTypes.func,
+  handleChecked: PropTypes.func.isRequired,
 };

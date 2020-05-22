@@ -22,19 +22,20 @@ const Wrapper = styled.main`
 `;
 
 const ThemeToggleContext = createContext();
-
+// exports functionality to DarkModeToggle
 export const useTheme = () => useContext(ThemeToggleContext);
 
 export const MyThemeProvider = ({ children }) => {
-  // const [themeState, setThemeState] = useState({ mode: 'light' });
+  // sets dark mode if user's browser/system is set to dark
   const [themeState, setThemeState] = useState({
     mode:
-      window.matchMedia &&
+      (window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
-        : 'light',
+        : 'light') || 'light',
   });
 
+  // watches for system changes
   useEffect(() => {
     window
       .matchMedia('(prefers-color-scheme: dark)')

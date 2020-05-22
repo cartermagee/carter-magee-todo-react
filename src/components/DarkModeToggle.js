@@ -32,7 +32,7 @@ const AnimatedToggleBtn = styled(animated.button)`
 function DarkModeToggle({ theme }) {
   const themeToggle = useTheme();
   const [showToggle, setShowToggle] = useState(false);
-
+  // react-spring animates based on state
   const slide = useSpring({
     config: config.stiff,
     width: showToggle ? '12rem' : '2.625rem',
@@ -44,11 +44,11 @@ function DarkModeToggle({ theme }) {
     opacity: showToggle ? 1 : 0,
     whiteSpace: 'nowrap',
   });
-
+  // tells springs to animate
   const handleHover = () => {
     setShowToggle(!showToggle);
   };
-
+  // calls theme toggle
   const handleClick = () => {
     themeToggle.toggle();
   };

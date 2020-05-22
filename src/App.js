@@ -11,6 +11,7 @@ import { sampleData } from './data/sampleData';
 const ToDoListContainer = styled.section`
   width: 600px;
   max-height: 80%;
+  min-height: 50%;
   border-radius: 1em;
   overflow: scroll;
   background: ${backgroundColor};
@@ -49,6 +50,16 @@ function App() {
     setTodoItems([...todoItems].filter((item) => item.id !== id));
   };
 
+  const handleChecked = (id, complete) => {
+    console.log({ todoItems });
+    const todoItemsCopy = [...todoItems];
+    for (const item of todoItemsCopy) {
+      if (item.id === id) item.complete = !complete;
+    }
+
+    setTodoItems(todoItemsCopy);
+  };
+
   // save to localstorage
   const persistLocalData = (todoList) =>
     window.localStorage.setItem('todoList', JSON.stringify(todoList));
@@ -62,7 +73,11 @@ function App() {
         <ListHeader>
           <ListTitle>Todo List!</ListTitle>
         </ListHeader>
-        <TodoList todoItems={todoItems} deleteTodo={deleteTodo} />
+        <TodoList
+          todoItems={todoItems}
+          deleteTodo={deleteTodo}
+          handleChecked={handleChecked}
+        />
         <AddTodo todoItems={!!todoItems.length} addNewTodo={addNewTodo} />
       </ToDoListContainer>
     </>
