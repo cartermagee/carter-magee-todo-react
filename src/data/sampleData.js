@@ -1,29 +1,27 @@
-import uid from 'uid';
-
 export const sampleData = [
   {
-    id: uid(),
+    id: 1,
     color: 'red',
     complete: false,
     name: 'do the dishes',
     tags: ['kitchen', 'morning'],
   },
   {
-    id: uid(),
+    id: 2,
     color: 'green',
     complete: true,
     name: 'take out the trash',
     tags: ['kitchen', 'morning', 'outside'],
   },
   {
-    id: uid(),
+    id: 3,
     color: 'blue',
     complete: false,
     name: 'shower',
     tags: ['bathroom', 'morning'],
   },
   {
-    id: uid(),
+    id: 4,
     color: 'darkgoldenrod',
     complete: true,
     name: 'clean litter box',
@@ -33,28 +31,28 @@ export const sampleData = [
 
 export const sampleDataObjects = {
   0: {
-    id: uid(),
+    id: 1,
     color: 'red',
     complete: false,
     name: 'do the dishes',
     tags: ['kitchen', 'morning'],
   },
   1: {
-    id: uid(),
+    id: 2,
     color: 'green',
     complete: true,
     name: 'take out the trash',
     tags: ['kitchen', 'morning', 'outside'],
   },
   2: {
-    id: uid(),
+    id: 3,
     color: 'blue',
     complete: false,
     name: 'shower',
     tags: ['bathroom', 'morning'],
   },
   3: {
-    id: uid(),
+    id: 4,
     color: 'darkgoldenrod',
     complete: true,
     name: 'clean litter box',

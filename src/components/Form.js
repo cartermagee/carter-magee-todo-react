@@ -9,6 +9,10 @@ export const Form = styled.form.attrs({
   autoComplete: 'off',
 })`
   background: ${inputBackground};
+  border-bottom: ${({ bottom }) =>
+    bottom ? '1px solid rgba(100,100,100,0.2)' : 'none'};
+  border-top: ${({ top }) =>
+    top ? '1px solid rgba(100,100,100,0.2)' : 'none'};
   bottom: 0;
   display: grid;
   grid-column: 1 /-1;

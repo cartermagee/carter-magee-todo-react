@@ -4,6 +4,7 @@ import { media } from './style-utils/media';
 
 import TodoList from './presentational/TodoList';
 import DarkModeToggle from './components/DarkModeToggle';
+import SearchBar from './components/SearchBar';
 import AddTodo from './components/AddTodo';
 import { backgroundColor } from './style-utils/theme';
 import { sampleData } from './data/sampleData';
@@ -41,6 +42,8 @@ function App() {
     JSON.parse(window.localStorage.getItem('todoList')) || sampleData;
 
   const [todoItems, setTodoItems] = useState(initialData);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
   const addNewTodo = (newTodoObj) => {
     setTodoItems([...todoItems, newTodoObj]);
@@ -51,7 +54,6 @@ function App() {
   };
 
   const handleChecked = (id, complete) => {
-    console.log({ todoItems });
     const todoItemsCopy = [...todoItems];
     for (const item of todoItemsCopy) {
       if (item.id === id) item.complete = !complete;
@@ -66,15 +68,34 @@ function App() {
   // watch changes in todoItems to call persistLocalStorage to save
   useEffect(() => persistLocalData(todoItems), [todoItems]);
 
+  const handleSearchInput = (event) => setSearchTerm(event.target.value);
+
+  useEffect(() => {
+    if (!searchTerm) return setSearchResults([]);
+    searchTerm.toLowerCase();
+    const filteredTodoItems = [...todoItems].filter(({ name }) =>
+      name.toString().toLowerCase().includes(searchTerm)
+    );
+
+    setSearchResults(filteredTodoItems);
+  }, [searchTerm]);
+
   return (
     <>
       <DarkModeToggle />
       <ToDoListContainer>
         <ListHeader>
           <ListTitle>Todo List!</ListTitle>
+          <SearchBar
+            searchTerm={searchTerm}
+            handleSearchInput={handleSearchInput}
+            searchResults={!!searchResults.length}
+          />
         </ListHeader>
         <TodoList
           todoItems={todoItems}
+          searchTerm={searchTerm}
+          searchResults={searchResults}
           deleteTodo={deleteTodo}
           handleChecked={handleChecked}
         />

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+// import { useSpring, animated, config } from 'react-spring';
 import { ArrowDown } from 'react-feather';
 import ListItem from '../components/ListItem';
 
@@ -16,26 +17,40 @@ const Instructions = styled.span`
 `;
 export default function TodoList({
   todoItems = {},
+  searchResults = {},
+  searchTerm = '',
   deleteTodo,
   handleChecked,
 }) {
-  return (
-    <ListItemsContainer todoItems={todoItems}>
-      {!todoItems.length ? (
+  //  I previously had this logic in a hideous nested ternary but I had to break it out into this function because the ternary gave me a rash.
+  const renderTodoList = () => {
+    if (searchTerm && !searchResults.length)
+      return <Instructions>No results!</Instructions>;
+    if (!todoItems.length)
+      return (
         <Instructions>
           add some todo items below <ArrowDown />
         </Instructions>
-      ) : (
-        todoItems.map(({ id, ...rest }) => (
-          <ListItem
-            key={id}
-            id={id}
-            {...rest}
-            deleteTodo={deleteTodo}
-            handleChecked={handleChecked}
-          />
-        ))
-      )}
+      );
+    return (searchResults.length
+      ? searchResults
+      : todoItems
+    ).map(({ id, ...rest }) => (
+      <ListItem
+        key={id}
+        id={id}
+        {...rest}
+        deleteTodo={deleteTodo}
+        handleChecked={handleChecked}
+      />
+    ));
+  };
+
+  return (
+    <ListItemsContainer
+      todoItems={searchResults.length ? searchResults : todoItems}
+    >
+      {renderTodoList()}
     </ListItemsContainer>
   );
 }
@@ -63,3 +78,19 @@ TodoList.propTypes = {
   deleteTodo: PropTypes.func.isRequired,
   handleChecked: PropTypes.func.isRequired,
 };
+
+/* GTFO
+      {searchTerm && !searchResults.length ? (
+        <Instructions>No results!</Instructions>
+      ) : !todoItems.length ? (
+        <Instructions>
+          add some todo items below <ArrowDown />
+        </Instructions>
+      ) : (
+        (searchResults.length
+          ? searchResults
+          : todoItems
+        ).map(({ id, ...rest }) => (
+          <ListItem key={id} {...rest} deleteTodo={deleteTodo} />
+        ))
+      )} */
