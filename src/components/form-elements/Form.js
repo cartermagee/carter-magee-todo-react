@@ -1,9 +1,10 @@
 import styled from 'styled-components';
+
 import {
   inputBackground,
   inputBackgroundFocus,
   textColor,
-} from '../style-utils/theme';
+} from '../../style-utils/theme';
 
 export const Form = styled.form.attrs({
   autoComplete: 'off',
@@ -16,6 +17,7 @@ export const Form = styled.form.attrs({
   bottom: 0;
   display: grid;
   grid-column: 1 /-1;
+  grid-row: 3;
   grid-template-columns: 5fr 1fr;
   height: 90px;
   letter-spacing: 2px;

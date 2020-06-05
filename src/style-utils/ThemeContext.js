@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
 import PropTypes from 'prop-types';
+import styled, { ThemeProvider } from 'styled-components';
+
 import { textColor, backgroundImage } from './theme';
 import { media } from './media';
 
@@ -14,6 +15,7 @@ const Wrapper = styled.main`
   justify-content: center;
   margin: 0;
   padding: 0;
+  position: fixed;
   transition: all 0.4s linear;
   width: 100%;
   ${media.desktop`
@@ -22,20 +24,19 @@ const Wrapper = styled.main`
 `;
 
 const ThemeToggleContext = createContext();
-// exports functionality to DarkModeToggle
+
 export const useTheme = () => useContext(ThemeToggleContext);
 
 export const MyThemeProvider = ({ children }) => {
-  // sets dark mode if user's browser/system is set to dark
   const [themeState, setThemeState] = useState({
     mode:
-      (window.matchMedia &&
+      window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
-        : 'light') || 'light',
+        : 'light',
   });
+  // console.log('themeprovider rendered');
 
-  // watches for system changes
   useEffect(() => {
     window
       .matchMedia('(prefers-color-scheme: dark)')

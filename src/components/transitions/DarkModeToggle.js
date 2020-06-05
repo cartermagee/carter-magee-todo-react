@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import styled, { withTheme } from 'styled-components';
 import { useSpring, animated, config } from 'react-spring';
 import { Moon, Sun } from 'react-feather';
-import { useTheme } from '../style-utils/ThemeContext';
-import { media } from '../style-utils/media';
+import { useTheme } from '../../style-utils/ThemeContext';
+import { media } from '../../style-utils/media';
 
 const AnimatedToggleBtn = styled(animated.button)`
   align-items: center;
@@ -81,4 +81,9 @@ DarkModeToggle.propTypes = {
   theme: PropTypes.object,
 };
 
-export default withTheme(DarkModeToggle);
+export default withTheme(
+  memo(
+    DarkModeToggle,
+    (prevProps, nextProps) => prevProps.theme.mode === nextProps.theme.mode
+  )
+);

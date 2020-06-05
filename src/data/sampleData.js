@@ -1,61 +1,89 @@
-export const sampleData = [
+import uid from 'uid';
+
+export const sampleTodoList = [
   {
-    id: 1,
+    id: uid(),
     color: 'red',
-    complete: false,
+    checked: false,
     name: 'do the dishes',
     tags: ['kitchen', 'morning'],
   },
   {
-    id: 2,
+    id: uid(),
     color: 'green',
-    complete: true,
+    checked: true,
     name: 'take out the trash',
     tags: ['kitchen', 'morning', 'outside'],
   },
   {
-    id: 3,
+    id: uid(),
     color: 'blue',
-    complete: false,
+    checked: false,
     name: 'shower',
     tags: ['bathroom', 'morning'],
   },
   {
-    id: 4,
+    id: uid(),
     color: 'darkgoldenrod',
-    complete: true,
+    checked: true,
     name: 'clean litter box',
     tags: ['bathroom', 'pets'],
   },
 ];
 
-export const sampleDataObjects = {
+export const sampleTodoListObjects = {
   0: {
-    id: 1,
+    id: uid(),
     color: 'red',
-    complete: false,
+    checked: false,
     name: 'do the dishes',
     tags: ['kitchen', 'morning'],
   },
   1: {
-    id: 2,
+    id: uid(),
     color: 'green',
-    complete: true,
+    checked: true,
     name: 'take out the trash',
     tags: ['kitchen', 'morning', 'outside'],
   },
   2: {
-    id: 3,
+    id: uid(),
     color: 'blue',
-    complete: false,
+    checked: false,
     name: 'shower',
     tags: ['bathroom', 'morning'],
   },
   3: {
-    id: 4,
+    id: uid(),
     color: 'darkgoldenrod',
-    complete: true,
+    checked: true,
     name: 'clean litter box',
     tags: ['bathroom', 'pets'],
   },
+};
+
+export const sampleTags = [
+  'tag1',
+  'tag2',
+  'kjahsdfkjhsa',
+  'taaaaaaaaaaaaaaaaaaaaag',
+  'kitchen',
+  'morning',
+];
+
+function sampleFunction() {
+  console.log('sample function called');
+}
+export const sampleDialogObj = {
+  text: 'sample text',
+  buttons: [
+    { btnTxt: 'confirm', callback: sampleFunction },
+    { btnTxt: 'cancel', callback: sampleFunction },
+  ],
+};
+
+export const sampleState = {
+  title: 'new todo list',
+  listItems: sampleTodoList,
+  tagsArray: sampleTags,
 };

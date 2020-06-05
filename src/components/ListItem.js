@@ -1,21 +1,29 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { CheckSquare, Square, X, Tag } from 'react-feather';
+
+import Editable from './Editable';
+
 import {
-  textColor,
   itemBackground,
   itemBackgroundHover,
+  textColor,
 } from '../style-utils/theme';
+// import ItemTags from './ItemTags';
 
 const ListItemContainer = styled.div`
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+`;
+
+const ListItemInner = styled.div`
   align-items: center;
   background: ${itemBackground};
-  color: ${textColor};
-  cursor: grab;
   display: grid;
-  font-weight: 500;
-  font-size: 20px;
   grid-template-columns: 1fr 4fr 1fr;
   height: 90px;
   width: 100%;
@@ -27,16 +35,22 @@ const ListItemContainer = styled.div`
 const Checkbox = styled.button.attrs({
   type: 'button',
 })`
+  align-items: center;
   background: none;
   color: ${textColor};
+  display: grid;
+  justify-items: center;
 `;
-const Task = styled.p`
-  cursor: text;
-  font-style: ${({ complete }) => complete && 'italic'};
-  text-decoration: ${({ complete }) => complete && 'line-through'};
+
+const TaskContainer = styled.span`
+  display: flex;
+  flex-direction: row;
+  font-style: ${({ checked }) => checked && 'italic'};
+  height: fit-content;
+  text-decoration: ${({ checked }) => checked && 'line-through'};
   width: fit-content;
   &:hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 `;
 
@@ -45,83 +59,113 @@ const OptionsContainer = styled.div`
   display: grid;
   height: 90%;
   justify-items: center;
-  width: 50px;
   justify-self: center;
-  & > * {
-    display: grid;
-    justify-items: center;
+  width: 50px;
+  & button {
     align-items: center;
     border-radius: 5px;
-    width: 100%;
     color: ${textColor};
-    background: inherit;
+    display: grid;
+    justify-items: center;
     &:hover {
       filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.5));
     }
   }
 `;
+
 const OptionsBtn = styled.button.attrs({
   type: 'button',
-})``;
+})`
+  width: 100%;
+  background: inherit;
+`;
+
 const ColorIndicator = styled.div`
-  width: 30px;
-  height: 20px;
-  border-radius: inherit;
+  align-items: center;
   background: ${({ color }) => color || 'none'};
   border: 1px solid ${({ color }) => (color ? 'transparent' : textColor)};
-  font-size: 8px;
+  border-radius: inherit;
   display: grid;
+  font-size: 8px;
+  height: 20px;
   justify-items: center;
-  align-items: center;
+  width: 30px;
 `;
-export default function ListItem({
-  name = '',
-  complete,
-  color = {},
-  id = '',
-  tags = {},
-  deleteTodo,
-  handleChecked,
-}) {
+function ListItem({ todo = {}, deleteTodo, toggleChecked, updateTodoName }) {
+  const {
+    checked = false,
+    id = '' || 0,
+    name = '',
+    color = '',
+    tags = [],
+  } = todo;
+
+  const [openTags, setOpenTags] = useState(false);
+
   const confirmDelete = () => {
-    if (window.confirm('Are you sure you wish to delete this item?')) {
-      console.log(`deleting: ${name}`);
-      deleteTodo(id);
-    }
-  };
-  const handleCheck = () => {
-    handleChecked(id, complete);
+    // if (window.confirm('Are you sure you wish to delete this item?')) {
+    //   console.log(`deleting: ${name}`);
+    // }
+    deleteTodo(todo);
   };
 
+  const handleCheck = () => {
+    toggleChecked(todo);
+  };
+
+  const toggleOpenTags = () => {
+    setOpenTags(!openTags);
+  };
   return (
     <ListItemContainer>
-      <Checkbox onClick={handleCheck}>
-        {complete ? <CheckSquare /> : <Square />}
-      </Checkbox>
-      <span>
-        <Task complete={complete}>{name}</Task>
-      </span>
-      <OptionsContainer>
-        <OptionsBtn onClick={confirmDelete}>
-          <X />
-        </OptionsBtn>
-        <OptionsBtn>
-          <ColorIndicator color={color}>{!color && <>(none)</>}</ColorIndicator>
-        </OptionsBtn>
-        <OptionsBtn>
-          <Tag />
-        </OptionsBtn>
-      </OptionsContainer>
+      <ListItemInner>
+        <Checkbox onClick={handleCheck}>
+          {checked ? <CheckSquare /> : <Square />}
+        </Checkbox>
+        <TaskContainer checked={checked}>
+          <Editable text={name} saveFunction={updateTodoName} />
+        </TaskContainer>
+        <OptionsContainer>
+          <OptionsBtn onClick={confirmDelete}>
+            <X />
+          </OptionsBtn>
+          <OptionsBtn>
+            <ColorIndicator color={color}>
+              {!color && <>(none)</>}
+            </ColorIndicator>
+          </OptionsBtn>
+          <OptionsBtn onClick={toggleOpenTags}>
+            <Tag />
+          </OptionsBtn>
+        </OptionsContainer>
+      </ListItemInner>
+      {/* <ItemTags
+        open={openTags}
+        tags={tags}
+        toggle={toggleOpenTags}
+        deleteTag={deleteTag}
+      /> */}
     </ListItemContainer>
   );
 }
 
 ListItem.propTypes = {
-  name: PropTypes.string.isRequired,
-  complete: PropTypes.bool.isRequired,
-  color: PropTypes.string,
-  id: PropTypes.string.isRequired,
-  tags: PropTypes.arrayOf(PropTypes.string),
+  todo: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    checked: PropTypes.bool.isRequired,
+    color: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
   deleteTodo: PropTypes.func,
-  handleChecked: PropTypes.func.isRequired,
+  toggleChecked: PropTypes.func.isRequired,
+  updateTodoName: PropTypes.func.isRequired,
 };
+
+export default ListItem;
+// export default memo(
+//   ListItem,
+//   (prevProps, nextProps) =>
+//     prevProps.todo.checked === nextProps.todo.checked &&
+//     prevProps.todoItems === nextProps.todoItems
+// );
