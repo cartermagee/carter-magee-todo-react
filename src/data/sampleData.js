@@ -70,6 +70,14 @@ export const sampleTags = [
   'kitchen',
   'morning',
 ];
+export const sampleColors = [
+  'red',
+  'green',
+  'blue',
+  'darkgoldenrod',
+  '#222',
+  '#fff',
+];
 
 function sampleFunction() {
   console.log('sample function called');

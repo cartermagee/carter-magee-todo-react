@@ -56,6 +56,12 @@ export const tagBackground = theme('mode', {
   light: '#147efb',
   dark: 'rebeccapurple',
 });
+
+export const filterInvert = theme('mode', {
+  light: 'none',
+  dark: 'invert(1)',
+});
+
 /* TODO style inputs and lock down color scheme
 react dark background #282c34
 twitch dark background main #18181A

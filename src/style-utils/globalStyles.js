@@ -1,6 +1,12 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
+@import url('https://fonts.googleapis.com/css?family=Notable');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
+html {
+  background-color: #fff;
+}
   * {
     box-sizing: border-box;
   }
@@ -10,11 +16,11 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     cursor: default;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font: 100% Ubuntu,Verdana,sans-serif;
     font-size: 20px;
     margin: 0;
     /* text-overflow: ellipsis; */
-    /* text-size-adjust: none; */
+    text-size-adjust: 100%;
     white-space: nowrap;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -34,6 +40,7 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
   }
   h1 {
+    /* font-family: Ubuntu Mono,Consolas,Menlo,monospace; */
     font-weight: 400;
     margin:0;
     text-align: center;
@@ -46,6 +53,7 @@ const GlobalStyle = createGlobalStyle`
   input{
     border: none;
     outline: none;
+    font-family: inherit;
   }
   input:focus{
     outline: none;

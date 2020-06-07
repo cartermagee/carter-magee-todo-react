@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+// import { useTransition, animated } from 'react-spring';
 import { CheckSquare, Square, X, Tag } from 'react-feather';
-
 import Editable from './Editable';
+import ColorIndicator from './colors/ColorIndicator';
+// import ColorWheel from '../icons/ColorWheel';
 
 import {
   itemBackground,
@@ -60,7 +62,7 @@ const OptionsContainer = styled.div`
   height: 90%;
   justify-items: center;
   justify-self: center;
-  width: 50px;
+  width: 30px;
   & button {
     align-items: center;
     border-radius: 5px;
@@ -80,17 +82,19 @@ const OptionsBtn = styled.button.attrs({
   background: inherit;
 `;
 
-const ColorIndicator = styled.div`
-  align-items: center;
-  background: ${({ color }) => color || 'none'};
-  border: 1px solid ${({ color }) => (color ? 'transparent' : textColor)};
-  border-radius: inherit;
-  display: grid;
-  font-size: 8px;
-  height: 20px;
-  justify-items: center;
-  width: 30px;
-`;
+// const ColorIndicator = styled.div`
+//   align-items: center;
+//   background: ${({ color }) => color || 'none'};
+//   /* border: 1px solid ${({ color }) => (color ? 'transparent' : textColor)}; */
+//   border-radius: inherit;
+//   display: grid;
+//   font-size: 8px;
+//   height: 20px;
+//   justify-items: center;
+//   overflow: hidden;
+//   width: 30px;
+//   position: relative;
+// `;
 function ListItem({ todo = {}, deleteTodo, toggleChecked, updateTodoName }) {
   const {
     checked = false,
@@ -130,9 +134,7 @@ function ListItem({ todo = {}, deleteTodo, toggleChecked, updateTodoName }) {
             <X />
           </OptionsBtn>
           <OptionsBtn>
-            <ColorIndicator color={color}>
-              {!color && <>(none)</>}
-            </ColorIndicator>
+            <ColorIndicator color={color} />
           </OptionsBtn>
           <OptionsBtn onClick={toggleOpenTags}>
             <Tag />

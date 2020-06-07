@@ -23,6 +23,8 @@ function TodoList({
   // removeTag,
   updateTodoName,
 }) {
+  console.log({ filteredTodos });
+
   return (
     <ListItemsContainer filteredTodos={filteredTodos}>
       {!filteredTodos.length ? (

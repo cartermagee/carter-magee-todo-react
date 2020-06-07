@@ -23,7 +23,7 @@ import TodoList from './pages/TodoList';
 import Tags from './pages/Tags';
 import Colors from './pages/Colors';
 
-import { sampleTodoList, sampleTags } from './data/sampleData';
+import { sampleTodoList, sampleTags, sampleColors } from './data/sampleData';
 // import { GetTab } from './helpers/getTab';
 
 const ToDoListContainer = styled.section`
@@ -49,12 +49,18 @@ const ToDoListContainer = styled.section`
 `;
 
 function App() {
-  const initialListItems = () =>
-    JSON.parse(window.localStorage.getItem('listItems')) || sampleTodoList;
-  const initialTags = () =>
-    JSON.parse(window.localStorage.getItem('tagsArray')) || sampleTags;
+  const appRef = useRef(null);
   const initialTitle = () =>
     JSON.parse(window.localStorage.getItem('title')) || 'New Todo List!';
+
+  const initialListItems = () =>
+    JSON.parse(window.localStorage.getItem('listItems')) || sampleTodoList;
+
+  const initialTags = () =>
+    JSON.parse(window.localStorage.getItem('tagsArray')) || sampleTags;
+
+  const initialColors = () =>
+    JSON.parse(window.localStorage.getItem('colors')) || sampleColors;
 
   const [showDialog, setShowDialog] = useState(false);
   const [dialogObj, setDialogObj] = useState({});
@@ -64,27 +70,31 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [tags, setTags] = useState(initialTags);
+  const [colors, setColors] = useState(initialColors);
   const [todoListTitle, setTodoListTitle] = useState(initialTitle);
 
   // save to localstorage
   const persistLocalData = (keyString, stateObject) =>
     window.localStorage.setItem(keyString, JSON.stringify(stateObject));
 
-  // watch changes in todoItems to call persistLocalStorage to save
-
+  // watch for changes
   useEffect(() => {
-    persistLocalData('tags', tags);
-  }, [tags]);
+    persistLocalData('title', todoListTitle);
+    document.title = todoListTitle;
+    return () => (document.title = 'TooDoOOO!');
+  }, [todoListTitle]);
 
   useEffect(() => {
     persistLocalData('listItems', todoItems);
   }, [todoItems]);
 
   useEffect(() => {
-    persistLocalData('title', todoListTitle);
-    document.title = todoListTitle;
-    return () => (document.title = 'TooDoOOO!');
-  }, [todoListTitle]);
+    persistLocalData('tags', tags);
+  }, [tags]);
+
+  useEffect(() => {
+    persistLocalData('colors', colors);
+  }, [colors]);
 
   // console.log({ tags });
   const addNewRef = useRef(null);
@@ -92,15 +102,40 @@ function App() {
     setShowDialog(false);
   };
 
+  /* UPDATE TITLE */
+  const updateTodoListTitle = (newTitle) => setTodoListTitle(newTitle);
+
+  /* TODO CUD */
   const addNewTodo = (newTodoObj) => {
     console.log(`adding new todo item: ${newTodoObj.name}`);
     setTodoItems([...todoItems, newTodoObj]);
   };
 
+  const updateTodoName = (name, oldName) => {
+    console.log({ name, oldName });
+
+    setTodoItems((prevObjs) =>
+      prevObjs.map((todo) => {
+        if (todo.name === oldName) return { ...todo, name };
+        return todo;
+      })
+    );
+  };
+
   const deleteTodo = (todo) => {
     setTodoItems([...todoItems].filter((item) => item !== todo));
   };
+  const toggleChecked = (todo) => {
+    const checked = !todo.checked;
+    setTodoItems((prevObjs) =>
+      prevObjs.map((o) => {
+        if (o === todo) return { ...o, checked };
+        return o;
+      })
+    );
+  };
 
+  /* TAGS CUD */
   const addNewTag = (newTag) => {
     const tagsSet = new Set([...tags]);
     if (!tagsSet.has(newTag)) {
@@ -113,29 +148,6 @@ function App() {
 
   const deleteTag = (tagToDelete) => {
     setTags([...tags].filter((tag) => tag !== tagToDelete));
-  };
-
-  const toggleChecked = (todo) => {
-    const checked = !todo.checked;
-    setTodoItems((prevObjs) =>
-      prevObjs.map((o) => {
-        if (o === todo) return { ...o, checked };
-        return o;
-      })
-    );
-  };
-
-  const updateTodoListTitle = (newTitle) => setTodoListTitle(newTitle);
-
-  const updateTodoName = (name, oldName) => {
-    console.log({ name, oldName });
-
-    setTodoItems((prevObjs) =>
-      prevObjs.map((todo) => {
-        if (todo.name === oldName) return { ...todo, name };
-        return todo;
-      })
-    );
   };
 
   const applyTagName = (tagName, oldTagName, unused) => {
@@ -195,6 +207,24 @@ function App() {
       applyTagName(tagName, oldTagName, true);
     }
     console.log({ itemsUsingTag });
+  };
+
+  /* COLORS CUD */
+  // REPEATED CODE FROM TAGS CONSOLIDATE
+
+  const addNewColor = (newColor) => {
+    console.log({ newColor });
+    const colorSet = new Set([...colors]);
+    if (!colorSet.has(newColor)) {
+      colorSet.add(newColor);
+      setColors([...colorSet]);
+    } else {
+      alert(`a color named ${newColor} already exists!`);
+    }
+  };
+
+  const deleteColor = (color) => {
+    setColors([...colors].filter((item) => item !== color));
   };
 
   const handleSearchInput = (event) => setSearchTerm(event.target.value);
@@ -264,7 +294,17 @@ function App() {
               />
             )}
           />
-          <Route path="/colors" render={() => <Colors />} />
+          <Route
+            path="/colors"
+            render={() => (
+              <Colors
+                colors={colors}
+                addNewColor={addNewColor}
+                deleteColor={deleteColor}
+                appRef={appRef}
+              />
+            )}
+          />
           {/* <Route component={NotFound} /> */}
         </Transition>
         <AddNew

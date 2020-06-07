@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Edit3 } from 'react-feather';
+import { Edit2, Save } from 'react-feather';
 
 const Container = styled.div`
   display: grid;
@@ -9,9 +9,10 @@ const Container = styled.div`
   text-decoration: ${({ isEditing }) => (isEditing ? 'underline' : 'inherit')};
   &:hover {
     font-style: normal;
-    text-decoration: underline;
+    /* text-decoration: underline; */
     div {
-      display: block;
+      /* display: block; */
+      visibility: visible;
     }
   }
 `;
@@ -25,7 +26,7 @@ const EditingInput = styled.input`
   text-align: inherit;
   width: 100%;
   &:focus {
-    text-decoration: underline;
+    /* text-decoration: underline; */
   }
 `;
 
@@ -36,10 +37,13 @@ const Text = styled.span`
 
 const IconContainer = styled.div`
   cursor: pointer;
-  display: ${({ isEditing }) => (isEditing ? 'block' : 'none')};
-  height: 24px;
+  visibility: ${({ isEditing }) => (isEditing ? 'visible' : 'hidden')};
+  /* display: ${({ isEditing }) => (isEditing ? 'block' : 'none')}; */
+  /* height: 24px; */
   margin: 0 3px;
-  width: 24px;
+  /* width: 24px; */
+  display: grid;
+  align-items: center;
 `;
 
 export default function Editable({ cancelEditing, text, saveFunction }) {
@@ -75,7 +79,7 @@ export default function Editable({ cancelEditing, text, saveFunction }) {
     return () => {
       document.removeEventListener('keydown', escFunction, false);
     };
-  }, [escFunction]);
+  });
 
   const toggleEdit = () => {
     setPrevValue(text);
@@ -105,6 +109,7 @@ export default function Editable({ cancelEditing, text, saveFunction }) {
               ref={inputRef}
               value={value}
               onChange={handleEdit}
+              size={value.length + 1}
               onBlur={handleBlur}
             />
           </EditingContainer>
@@ -112,11 +117,11 @@ export default function Editable({ cancelEditing, text, saveFunction }) {
       ) : (
         <>
           <Text onClick={toggleEdit}>{text}</Text>
-          <IconContainer isEditing={isEditing} onClick={toggleEdit}>
-            <Edit3 />
-          </IconContainer>
         </>
       )}
+      <IconContainer isEditing={isEditing} onClick={toggleEdit}>
+        {isEditing ? <Save /> : <Edit2 />}
+      </IconContainer>
     </Container>
   );
 }

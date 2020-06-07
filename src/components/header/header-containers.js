@@ -17,4 +17,6 @@ export const ListTitle = styled.h1`
   display: flex;
   justify-content: center;
   justify-self: center;
+  position: relative;
+  left: 21px;
 `;
