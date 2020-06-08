@@ -5,11 +5,13 @@ import App from './App';
 
 import { MyThemeProvider } from './style-utils/ThemeContext';
 import GlobalStyle from './style-utils/globalStyles';
+import GlobalFont from './style-utils/fonts/fonts';
 
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <MyThemeProvider>
+    <GlobalFont />
     <GlobalStyle />
     <BrowserRouter>
       <App />

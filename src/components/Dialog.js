@@ -56,7 +56,7 @@ export default function Dialog({
   dialogObj: { text = '', buttons = [] },
   closeDialog,
 }) {
-  const slideDownRef = useRef();
+  const slideDownRef = useRef(null);
 
   const slideDown = useSpring({
     ref: slideDownRef,
@@ -70,7 +70,7 @@ export default function Dialog({
     },
   });
 
-  const fadeInRef = useRef();
+  const fadeInRef = useRef(null);
 
   const fadeIn = useSpring({
     ref: fadeInRef,
@@ -84,7 +84,7 @@ export default function Dialog({
     },
   });
 
-  const transitionRef = useRef();
+  const transitionRef = useRef(null);
 
   const transition = useTransition(showDialog, null, {
     ref: transitionRef,

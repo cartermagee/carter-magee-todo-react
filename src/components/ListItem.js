@@ -1,34 +1,37 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-// import { useTransition, animated } from 'react-spring';
 import { CheckSquare, Square, X, Tag } from 'react-feather';
-import Editable from './Editable';
-import ColorIndicator from './colors/ColorIndicator';
-// import ColorWheel from '../icons/ColorWheel';
-
 import {
   itemBackground,
   itemBackgroundHover,
   textColor,
 } from '../style-utils/theme';
-// import ItemTags from './ItemTags';
+
+import ColorIndicator from './colors/ColorIndicator';
+import Editable from './Editable';
+import ItemColor from './dropdowns/ItemColor';
+import ItemTags from './dropdowns/ItemTags';
+
+import { useOnClickOutside } from '../helpers/useOnClickOutside';
+import { useOnEscapeClose } from '../helpers/useOnEscapeClose';
 
 const ListItemContainer = styled.div`
-  cursor: grab;
   display: flex;
   flex-direction: column;
-  position: relative;
   width: 100%;
 `;
 
 const ListItemInner = styled.div`
   align-items: center;
-  background: ${itemBackground};
+  background: ${({ active }) =>
+    active ? itemBackgroundHover : itemBackground};
+  cursor: grab;
   display: grid;
   grid-template-columns: 1fr 4fr 1fr;
   height: 90px;
   width: 100%;
+  z-index: 3;
   &:hover {
     background: ${itemBackgroundHover};
   }
@@ -78,33 +81,25 @@ const OptionsContainer = styled.div`
 const OptionsBtn = styled.button.attrs({
   type: 'button',
 })`
-  width: 100%;
   background: inherit;
+  width: 100%;
 `;
 
-// const ColorIndicator = styled.div`
-//   align-items: center;
-//   background: ${({ color }) => color || 'none'};
-//   /* border: 1px solid ${({ color }) => (color ? 'transparent' : textColor)}; */
-//   border-radius: inherit;
-//   display: grid;
-//   font-size: 8px;
-//   height: 20px;
-//   justify-items: center;
-//   overflow: hidden;
-//   width: 30px;
-//   position: relative;
-// `;
-function ListItem({ todo = {}, deleteTodo, toggleChecked, updateTodoName }) {
-  const {
-    checked = false,
-    id = '' || 0,
-    name = '',
-    color = '',
-    tags = [],
-  } = todo;
+function ListItem({
+  todo = {},
+  colors = [],
+  tags = [],
+  deleteTodo,
+  toggleChecked,
+  updateTodoName,
+  confirmUpdateTagName,
+  assignAttribute,
+  removeAttribute,
+}) {
+  const { checked = false, name = '', color = '', tags: itemTags = [] } = todo;
 
   const [openTags, setOpenTags] = useState(false);
+  const [openColors, setOpenColors] = useState(false);
 
   const confirmDelete = () => {
     // if (window.confirm('Are you sure you wish to delete this item?')) {
@@ -117,23 +112,45 @@ function ListItem({ todo = {}, deleteTodo, toggleChecked, updateTodoName }) {
     toggleChecked(todo);
   };
 
+  const handleAssign = (attr, type) => {
+    assignAttribute(attr, name, type);
+  };
+
+  const handleRemoveAttribute = (attr, type) => {
+    removeAttribute(attr, name, type);
+  };
+
+  const closeDropdown = () => {
+    if (openTags) return setOpenTags(false);
+    if (openColors) return setOpenColors(false);
+  };
+
   const toggleOpenTags = () => {
+    closeDropdown();
     setOpenTags(!openTags);
   };
+  const toggleOpenColors = () => {
+    closeDropdown();
+    setOpenColors(!openColors);
+  };
+  const itemRef = useRef();
+  useOnClickOutside(itemRef, closeDropdown);
+  useOnEscapeClose(closeDropdown);
+
   return (
-    <ListItemContainer>
-      <ListItemInner>
+    <ListItemContainer ref={itemRef}>
+      <ListItemInner active={openTags}>
         <Checkbox onClick={handleCheck}>
           {checked ? <CheckSquare /> : <Square />}
         </Checkbox>
         <TaskContainer checked={checked}>
-          <Editable text={name} saveFunction={updateTodoName} />
+          <Editable text={name} updateFunction={updateTodoName} />
         </TaskContainer>
         <OptionsContainer>
           <OptionsBtn onClick={confirmDelete}>
             <X />
           </OptionsBtn>
-          <OptionsBtn>
+          <OptionsBtn onClick={toggleOpenColors}>
             <ColorIndicator color={color} />
           </OptionsBtn>
           <OptionsBtn onClick={toggleOpenTags}>
@@ -141,12 +158,24 @@ function ListItem({ todo = {}, deleteTodo, toggleChecked, updateTodoName }) {
           </OptionsBtn>
         </OptionsContainer>
       </ListItemInner>
-      {/* <ItemTags
+      <ItemTags
         open={openTags}
+        itemTags={itemTags}
         tags={tags}
         toggle={toggleOpenTags}
-        deleteTag={deleteTag}
-      /> */}
+        confirmUpdateTagName={confirmUpdateTagName}
+        handleAssign={handleAssign}
+        handleRemoveAttribute={handleRemoveAttribute}
+      />
+      <ItemColor
+        open={openColors}
+        itemColor={color}
+        colors={colors}
+        toggle={toggleOpenColors}
+        confirmUpdateTagName={confirmUpdateTagName}
+        handleAssign={handleAssign}
+        handleRemoveAttribute={handleRemoveAttribute}
+      />
     </ListItemContainer>
   );
 }
@@ -159,9 +188,14 @@ ListItem.propTypes = {
     color: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
-  deleteTodo: PropTypes.func,
+  colors: PropTypes.arrayOf(PropTypes.string),
+  tags: PropTypes.arrayOf(PropTypes.string),
+  deleteTodo: PropTypes.func.isRequired,
   toggleChecked: PropTypes.func.isRequired,
   updateTodoName: PropTypes.func.isRequired,
+  confirmUpdateTagName: PropTypes.func.isRequired,
+  assignAttribute: PropTypes.func.isRequired,
+  removeAttribute: PropTypes.func.isRequired,
 };
 
 export default ListItem;

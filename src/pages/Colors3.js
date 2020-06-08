@@ -1,16 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { BlockPicker } from 'react-color';
-
 import ColorIndicator from '../components/colors/ColorIndicator';
-
 import { textColor, backgroundColor } from '../style-utils/theme';
 import { getContrastYIQ } from '../helpers/getContrastTIQ';
-import { useOnClickOutside } from '../helpers/useOnClickOutside';
-import { useOnEscapeClose } from '../helpers/useOnEscapeClose';
-import { useSubmitOnEnter } from '../helpers/useSubmitOnEnter';
-import { useOnNOpen } from '../helpers/useOnNOpen';
 
 const ColorsContainer = styled.div`
   align-items: center;
@@ -23,10 +17,10 @@ const ColorsContainer = styled.div`
 `;
 
 const ColorPickerContainer = styled.div`
-  height: 2rem;
-  margin: 5px;
-  overflow: visible;
   text-align: center;
+  overflow: visible;
+  margin: 5px;
+  height: 2rem;
 `;
 
 const Button = styled.button.attrs({
@@ -53,35 +47,74 @@ const ColorPicker = styled(BlockPicker)`
   margin-top: 1rem;
 `;
 
-function Colors({ colors = [], addNewAttribute, confirmDeleteAttribute }) {
+function Colors({ colors = [], addNewAttribute, deleteColor }) {
+  const colorPickerRef = useRef(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [newColor, setNewColor] = useState('#000000');
 
-  const escFunction = () => {
+  console.log({
+    showColorPicker,
+    newColor,
+  });
+
+  const escFunction = useCallback((e) => {
+    if (e.keyCode === 27 || e.keyCode === 9) {
+      setShowColorPicker(false);
+      setNewColor('#000000');
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', escFunction, false);
+    return () => {
+      document.removeEventListener('keydown', escFunction, false);
+    };
+  }, [escFunction]);
+
+  const toggleShowColorPicker = (e) => {
+    setShowColorPicker(!showColorPicker);
+  };
+
+  const handleClickOutside = (e) => {
+    if (colorPickerRef.current.contains(e.target)) return;
     setShowColorPicker(false);
     setNewColor('#000000');
   };
 
-  const colorPickerRef = useRef(null);
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
 
-  useOnClickOutside(colorPickerRef, () => escFunction());
-
-  useOnEscapeClose(escFunction);
-  useOnNOpen(() => setShowColorPicker(true));
-
-  const handleSubmit = () => {
-    setShowColorPicker(false);
-    addNewAttribute(newColor, 'colors');
-  };
-  useSubmitOnEnter(handleSubmit, showColorPicker);
-  const toggleShowColorPicker = (e) => {
-    setShowColorPicker(!showColorPicker);
-  };
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleColorSelect = (color) => {
     setNewColor(color.hex);
   };
 
+  const handleSubmit = () => {
+    setShowColorPicker(false);
+    addNewAttribute(newColor, 'colors');
+  };
+
+  const handleKeyPress = useCallback(
+    (e) => {
+      if (e.keyCode === 27 || e.keyCode === 9) return setShowColorPicker(false);
+      if (e.keyCode === 13 && showColorPicker) {
+        setShowColorPicker(false);
+        addNewAttribute(newColor, 'colors');
+      }
+    },
+    [addNewAttribute, newColor, showColorPicker]
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress, false);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress, false);
+    };
+  });
   return (
     <ColorsContainer>
       {colors.map((color) => (
@@ -89,7 +122,7 @@ function Colors({ colors = [], addNewAttribute, confirmDeleteAttribute }) {
           large
           key={color}
           color={color}
-          confirmDeleteAttribute={confirmDeleteAttribute}
+          deleteColor={deleteColor}
         />
       ))}
       <ColorPickerContainer ref={colorPickerRef}>
@@ -99,11 +132,16 @@ function Colors({ colors = [], addNewAttribute, confirmDeleteAttribute }) {
             inputBackgroundColor={newColor}
             btnTextColor={() => getContrastYIQ(newColor)}
             onClick={handleSubmit}
+            // onBlur={handleClickOutside}
           >
             submit
           </Button>
         ) : (
-          <Button btnTextColor={textColor} onClick={toggleShowColorPicker}>
+          <Button
+            btnTextColor={textColor}
+            onClick={toggleShowColorPicker}
+            // onBlur={handleClickOutside}
+          >
             add new
           </Button>
         )}
@@ -122,7 +160,7 @@ function Colors({ colors = [], addNewAttribute, confirmDeleteAttribute }) {
 Colors.propTypes = {
   colors: PropTypes.arrayOf(PropTypes.string),
   addNewAttribute: PropTypes.func.isRequired,
-  confirmDeleteAttribute: PropTypes.func.isRequired,
+  deleteColor: PropTypes.func.isRequired,
 };
 
 export default Colors;

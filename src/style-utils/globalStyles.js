@@ -1,8 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css?family=Notable');
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
 
 html {
   background-color: #fff;
@@ -19,7 +17,6 @@ html {
     font: 100% Ubuntu,Verdana,sans-serif;
     font-size: 20px;
     margin: 0;
-    /* text-overflow: ellipsis; */
     text-size-adjust: 100%;
     white-space: nowrap;
     -webkit-font-smoothing: antialiased;

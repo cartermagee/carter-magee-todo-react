@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import styled from 'styled-components';
 import { ReactComponent as Wheel } from './color-wheel.svg';
 import { filterInvert } from '../style-utils/theme';
@@ -10,7 +12,11 @@ const Icon = styled.div`
   height: 110%;
   position: absolute;
   width: 110%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `;
+
 const Eroteme = styled.p`
   color: #fff;
   font-size: 16px;
@@ -23,14 +29,18 @@ const Background = styled(Wheel)`
   filter: ${filterInvert};
   grid-column: 1 / -1;
   grid-row: 1 / -1;
-  width: 110%;
+  /* width: 100%; */
 `;
 
-export default function ColorWheel() {
+export default function ColorWheel({ large }) {
   return (
     <Icon>
-      <Eroteme>?</Eroteme>
+      <Eroteme>{large ? '(none)' : '?'}</Eroteme>
       <Background />
     </Icon>
   );
 }
+
+ColorWheel.propTypes = {
+  large: PropTypes.bool,
+};

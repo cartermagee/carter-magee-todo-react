@@ -9,3 +9,5 @@ export function getContrastYIQ(hex) {
   const yiq = (r * 299 + g * 587 + b * 114) / 1000;
   return yiq >= 128 ? '#000' : '#fff';
 }
+
+// https://24ways.org/2010/calculating-color-contrast/

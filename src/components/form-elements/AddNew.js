@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Plus } from 'react-feather';
@@ -25,11 +25,10 @@ function AddNew({
   todoItemsLength = 0,
   tagsLength = 0,
   addNewTodo,
-  addNewTag,
-  addNewRef,
+  addNewAttribute,
 }) {
+  const addNewRef = useRef(null);
   const { currentTab } = GetTab();
-
   const [ready, setReady] = useState(false);
   const [inputText, setInputText] = useState('');
   const [highlight, setHighlight] = useState(false);
@@ -60,7 +59,7 @@ function AddNew({
   const handleSubmit = (event) => {
     event.preventDefault();
     if (currentTab === 1) {
-      addNewTag(inputText);
+      addNewAttribute(inputText, 'tags');
     } else {
       const id = uid();
       const newTodoObj = {
@@ -107,7 +106,7 @@ AddNew.propTypes = {
   todoItemsLength: PropTypes.number,
   tagsLength: PropTypes.number,
   addNewTodo: PropTypes.func.isRequired,
-  addNewTag: PropTypes.func.isRequired,
+  addNewAttribute: PropTypes.func.isRequired,
   addNewRef: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.shape({ current: PropTypes.any }),

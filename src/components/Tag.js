@@ -1,74 +1,100 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { X } from 'react-feather';
-
-import { tagBackground } from '../style-utils/theme';
+import { animated } from 'react-spring';
+import { Plus, X } from 'react-feather';
 
 import Editable from './Editable';
 
-const TagContainer = styled.span`
+import { tagBackground } from '../style-utils/theme';
+
+const TagContainer = styled(animated.span)`
   align-items: center;
   background: ${tagBackground};
   border-radius: 50px;
   color: #fff;
   display: grid;
+  font-size: ${({ small }) => (small ? '14px' : 'inherit')};
   grid-template-columns: auto 1fr;
   height: fit-content;
   justify-items: center;
   margin: 5px;
   max-width: calc(100% / 3.5);
+  min-width: 128px;
   padding: 3px 3px 3px 8px;
   & span {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  & svg {
+    height: ${({ small }) => (small ? '14px' : '20px')};
+    width: ${({ small }) => (small ? '14px' : '20px')};
+  }
 `;
-const DeleteBtn = styled.button.attrs({
+const TagButton = styled.button.attrs({
   type: 'button',
 })`
   background: none;
   color: inherit;
-  height: 24px;
-  width: 24px;
+  display: grid;
+  justify-items: center;
+  justify-self: end;
+  margin: auto 0;
 `;
 
 export default function Tag({
+  add = false,
+  assigned = false,
   cancelEditing = false,
-  tagName = '',
+  small = false,
+  tagName = '' || null,
+  addNewAttribute,
   confirmUpdateTagName,
-  deleteTag,
+  confirmDeleteAttribute,
+  toggleNewEmptyTag,
+  handleAssign,
+  animatedStyle,
+  handleRemoveAttribute,
 }) {
-  const confirmDelete = () => {
-    console.log({ tagName });
-    // if (
-    //   window.confirm(
-    //     'Are you sure you wish to delete this tag? Deleting this will also remove it from any list items to which it is assigned.'
-    //   )
-    // ) {
-    //   console.log(`deleting: ${tagName}`);
-    //   deleteTag(tagName);
-    // }
-    deleteTag(tagName);
+  const handleDelete = () => {
+    if (small) return handleRemoveAttribute(tagName, 'tags');
+    confirmDeleteAttribute(tagName, 'tags');
   };
 
   return (
-    <TagContainer>
+    <TagContainer style={animatedStyle} small={small ? 1 : 0}>
       <Editable
-        text={tagName}
-        saveFunction={confirmUpdateTagName}
+        add={add}
         cancelEditing={cancelEditing}
+        small={small}
+        text={tagName}
+        type="tags"
+        addNewAttribute={addNewAttribute}
+        updateFunction={confirmUpdateTagName}
+        toggleNewEmptyTag={toggleNewEmptyTag}
       />
-      <DeleteBtn onClick={confirmDelete}>
-        <X />
-      </DeleteBtn>
+      <TagButton small={small}>
+        {small && !assigned ? (
+          <Plus onClick={() => handleAssign(tagName, 'tags')} />
+        ) : (
+          <X onClick={handleDelete} />
+        )}
+      </TagButton>
     </TagContainer>
   );
 }
 
 Tag.propTypes = {
-  cancelEditing: PropTypes.bool.isRequired,
+  add: PropTypes.bool,
+  assigned: PropTypes.bool,
+  cancelEditing: PropTypes.bool,
+  small: PropTypes.bool,
   tagName: PropTypes.string.isRequired,
-  deleteTag: PropTypes.func.isRequired,
-  confirmUpdateTagName: PropTypes.func.isRequired,
+  animatedStyle: PropTypes.object,
+  addNewAttribute: PropTypes.func,
+  confirmDeleteAttribute: PropTypes.func,
+  toggleNewEmptyTag: PropTypes.func,
+  handleAssign: PropTypes.func,
+  confirmUpdateTagName: PropTypes.func,
+  handleRemoveAttribute: PropTypes.func,
 };

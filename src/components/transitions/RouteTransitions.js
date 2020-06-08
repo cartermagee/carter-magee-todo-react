@@ -6,12 +6,9 @@ import { useTransition, animated } from 'react-spring';
 import { GetTab } from '../../helpers/getTab';
 
 const RouteWrapper = styled(animated.section)`
-  align-items: start;
-  display: grid;
   grid-column: 1/-1;
   grid-row: 2;
   height: 100%;
-  justify-items: center;
   max-height: 100%;
   min-height: 30vh;
   overflow-y: scroll;
