@@ -1,43 +1,61 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { CheckSquare, Square, X } from 'react-feather';
-import { textColor, itemBackground } from '../style-utils/theme';
+import styled from 'styled-components';
+import { CheckSquare, Square, X, Tag } from 'react-feather';
+import {
+  itemBackground,
+  itemBackgroundHover,
+  textColor,
+} from '../style-utils/theme';
 
-const Item = styled.div`
-  align-items: center;
-  background: linear-gradient(
-    135deg,
-    ${itemBackground} 30%,
-    ${({ color }) => color || '#fda085'} 100%
-  );
-  border-radius: 5px;
-  color: ${textColor};
-  cursor: grab;
-  display: grid;
-  grid-template-columns: 1fr 3fr auto;
-  height: 90px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+import ColorIndicator from './colors/ColorIndicator';
+import Editable from './Editable';
+import ItemColor from './dropdowns/ItemColor';
+import ItemTags from './dropdowns/ItemTags';
+
+import { useOnClickOutside } from '../helpers/useOnClickOutside';
+import { useOnEscapeClose } from '../helpers/useOnEscapeClose';
+
+const ListItemContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
 `;
 
-const Checkbox = styled.button`
-  background: none;
-  border: none;
-  color: ${textColor};
-  cursor: pointer;
-  margin: 0;
-  padding: 0;
-  width: fit-content;
-  outline: none;
-  justify-self: center;
+const ListItemInner = styled.div`
+  align-items: center;
+  background: ${({ active }) =>
+    active ? itemBackgroundHover : itemBackground};
+  cursor: grab;
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+  height: 90px;
+  width: 100%;
+  z-index: 3;
+  &:hover {
+    background: ${itemBackgroundHover};
+  }
 `;
-const Task = styled.p`
-  cursor: text;
+
+const Checkbox = styled.button.attrs({
+  type: 'button',
+})`
+  align-items: center;
+  background: none;
+  color: ${textColor};
+  display: grid;
+  justify-items: center;
+`;
+
+const TaskContainer = styled.span`
+  display: flex;
+  flex-direction: row;
+  font-style: ${({ checked }) => checked && 'italic'};
+  height: fit-content;
+  text-decoration: ${({ checked }) => checked && 'line-through'};
   width: fit-content;
   &:hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 `;
 
@@ -46,37 +64,144 @@ const OptionsContainer = styled.div`
   display: grid;
   height: 90%;
   justify-items: center;
-  margin-right: 7px;
-  width: 50px;
+  justify-self: center;
+  width: 30px;
+  & button {
+    align-items: center;
+    border-radius: 5px;
+    color: ${textColor};
+    display: grid;
+    justify-items: center;
+    &:hover {
+      filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.5));
+    }
+  }
 `;
-const OptionsBtn = styled.button`
-  background: ${itemBackground};
-  border-radius: 5px;
-  color: ${textColor};
-  padding: 5px;
+
+const OptionsBtn = styled.button.attrs({
+  type: 'button',
+})`
+  background: inherit;
   width: 100%;
 `;
-export default function ListItem({ name, complete, color = {}, tags = {} }) {
+
+function ListItem({
+  todo = {},
+  colors = [],
+  tags = [],
+  deleteTodo,
+  toggleChecked,
+  updateTodoName,
+  confirmUpdateTagName,
+  assignAttribute,
+  removeAttribute,
+}) {
+  const { checked = false, name = '', color = '', tags: itemTags = [] } = todo;
+
+  const [openTags, setOpenTags] = useState(false);
+  const [openColors, setOpenColors] = useState(false);
+
+  const confirmDelete = () => {
+    // if (window.confirm('Are you sure you wish to delete this item?')) {
+    //   console.log(`deleting: ${name}`);
+    // }
+    deleteTodo(todo);
+  };
+
+  const handleCheck = () => {
+    toggleChecked(todo);
+  };
+
+  const handleAssign = (attr, type) => {
+    assignAttribute(attr, name, type);
+  };
+
+  const handleRemoveAttribute = (attr, type) => {
+    removeAttribute(attr, name, type);
+  };
+
+  const closeDropdown = () => {
+    if (openTags) return setOpenTags(false);
+    if (openColors) return setOpenColors(false);
+  };
+
+  const toggleOpenTags = () => {
+    closeDropdown();
+    setOpenTags(!openTags);
+  };
+  const toggleOpenColors = () => {
+    closeDropdown();
+    setOpenColors(!openColors);
+  };
+  const itemRef = useRef();
+  useOnClickOutside(itemRef, closeDropdown);
+  useOnEscapeClose(closeDropdown);
+
   return (
-    <Item color={color}>
-      <Checkbox type="button">
-        {complete ? <CheckSquare /> : <Square />}
-      </Checkbox>
-      <span>
-        <Task>{name}</Task>
-      </span>
-      <OptionsContainer>
-        <X cursor="pointer" />
-        <OptionsBtn>{color}</OptionsBtn>
-        <OptionsBtn>tags</OptionsBtn>
-      </OptionsContainer>
-    </Item>
+    <ListItemContainer ref={itemRef}>
+      <ListItemInner active={openTags}>
+        <Checkbox onClick={handleCheck}>
+          {checked ? <CheckSquare /> : <Square />}
+        </Checkbox>
+        <TaskContainer checked={checked}>
+          <Editable text={name} updateFunction={updateTodoName} />
+        </TaskContainer>
+        <OptionsContainer>
+          <OptionsBtn onClick={confirmDelete}>
+            <X />
+          </OptionsBtn>
+          <OptionsBtn onClick={toggleOpenColors}>
+            <ColorIndicator color={color} />
+          </OptionsBtn>
+          <OptionsBtn onClick={toggleOpenTags}>
+            <Tag />
+          </OptionsBtn>
+        </OptionsContainer>
+      </ListItemInner>
+      <ItemTags
+        open={openTags}
+        itemTags={itemTags}
+        tags={tags}
+        toggle={toggleOpenTags}
+        confirmUpdateTagName={confirmUpdateTagName}
+        handleAssign={handleAssign}
+        handleRemoveAttribute={handleRemoveAttribute}
+      />
+      <ItemColor
+        open={openColors}
+        itemColor={color}
+        colors={colors}
+        toggle={toggleOpenColors}
+        confirmUpdateTagName={confirmUpdateTagName}
+        handleAssign={handleAssign}
+        handleRemoveAttribute={handleRemoveAttribute}
+      />
+    </ListItemContainer>
   );
 }
 
 ListItem.propTypes = {
-  name: PropTypes.string.isRequired,
-  complete: PropTypes.bool.isRequired,
-  color: PropTypes.string,
+  todo: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    checked: PropTypes.bool.isRequired,
+    color: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+  colors: PropTypes.arrayOf(PropTypes.string),
   tags: PropTypes.arrayOf(PropTypes.string),
+  deleteTodo: PropTypes.func.isRequired,
+  toggleChecked: PropTypes.func.isRequired,
+  updateTodoName: PropTypes.func.isRequired,
+  confirmUpdateTagName: PropTypes.func.isRequired,
+  assignAttribute: PropTypes.func.isRequired,
+  removeAttribute: PropTypes.func.isRequired,
 };
+
+export default ListItem;
+// export default memo(
+//   ListItem,
+//   (prevProps, nextProps) =>
+//     prevProps.todo.checked === nextProps.todo.checked &&
+//     prevProps.todoItems === nextProps.todoItems
+// );
