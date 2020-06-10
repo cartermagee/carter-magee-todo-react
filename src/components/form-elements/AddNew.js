@@ -76,8 +76,9 @@ function AddNew({
   };
 
   return (
-    <Form onSubmit={handleSubmit} top>
+    <Form onSubmit={handleSubmit} bottom>
       <AddNewInput
+        bottom
         ref={addNewRef}
         type="text"
         name="new todo"

@@ -92,7 +92,7 @@ function Editable({
     return () => {
       document.removeEventListener('keydown', handleKeyPress, false);
     };
-  });
+  }, []);
 
   const toggleEdit = () => {
     setPrevValue(text);

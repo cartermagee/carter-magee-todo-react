@@ -114,7 +114,7 @@ function Colors({ colors = [], addNewAttribute, deleteColor }) {
     return () => {
       document.removeEventListener('keydown', handleKeyPress, false);
     };
-  });
+  }, []);
   return (
     <ColorsContainer>
       {colors.map((color) => (

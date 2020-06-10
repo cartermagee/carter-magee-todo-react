@@ -37,17 +37,14 @@ const ToDoListContainer = styled.section`
   position: fixed;
   top: 10vh;
   width: 600px;
-  max-height: 80%;
   ${media.tablet`
     top: 5vh;
-    height: 100%;
     width: 75%;
    `}
   ${media.phone`
-    height: 100vh;
-    top: 0;
-    width: 100%;
-    max-height: 100vh;
+    max-height: 100%;
+    top: 1vh;
+    width: 95%;
    `}
 `;
 
@@ -71,7 +68,7 @@ function App() {
 
   const [todoItems, setTodoItems] = useState(initialTodoItems);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredTodos, setFilteredTodos] = useState([]);
+  const [filteredTodos, setFilteredTodos] = useState(todoItems);
   const [tags, setTags] = useState(initialTags);
   const [colors, setColors] = useState(initialColors);
   const [todoListTitle, setTodoListTitle] = useState(initialTitle);
@@ -367,6 +364,10 @@ function App() {
       )
     );
   };
+  /* DRAG REORDERING */
+  const reorderList = (newOrder) => {
+    setTodoItems(newOrder.map((i) => todoItems[i]));
+  };
 
   return (
     <>
@@ -413,6 +414,7 @@ function App() {
                 todoListRef={todoListRef}
                 toggleChecked={toggleChecked}
                 updateTodoName={updateTodoName}
+                reorderList={reorderList}
               />
             )}
             exact

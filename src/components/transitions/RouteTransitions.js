@@ -12,6 +12,7 @@ const RouteWrapper = styled(animated.section)`
   max-height: 100%;
   min-height: 30vh;
   overflow-y: scroll;
+  user-select: none;
   width: 100%;
 `;
 
@@ -20,7 +21,7 @@ function RouteTransitions({ children }) {
 
   const [previousTab, setPreviousTab] = useState(0);
 
-  const transitions = useTransition(location, currentTab, {
+  const transitions = useTransition(location, ({ pathname }) => pathname, {
     unique: true,
     from: () => ({
       transform: `translate3d(${(currentTab - previousTab) * 100}%, 0, 0)`,

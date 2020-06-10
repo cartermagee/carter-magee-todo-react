@@ -10,10 +10,11 @@ export const Form = styled.form.attrs({
   autoComplete: 'off',
 })`
   background: ${inputBackground};
-  border-bottom: ${({ bottom }) =>
-    bottom ? '1px solid rgba(100,100,100,0.2)' : 'none'};
-  border-top: ${({ top }) =>
+  border-bottom: ${({ top }) =>
     top ? '1px solid rgba(100,100,100,0.2)' : 'none'};
+  border-top: 1px solid rgba(100, 100, 100, 0.2);
+  border-bottom-left-radius: ${({ bottom }) => bottom && '1em'};
+  border-bottom-right-radius: ${({ bottom }) => bottom && '1em'};
   bottom: 0;
   display: grid;
   grid-column: 1 /-1;
@@ -40,6 +41,8 @@ export const Form = styled.form.attrs({
 export const Input = styled.input.attrs({
   type: 'text',
 })`
+  border-bottom-left-radius: ${({ bottom }) => bottom && '1em'};
+  border-bottom-right-radius: ${({ bottom }) => bottom && '1em'};
   padding: 0 3rem;
   width: 100%;
   &:focus {

@@ -61,3 +61,19 @@ export const filterInvert = theme('mode', {
   light: 'none',
   dark: 'invert(1)',
 });
+
+/* TODO style inputs and lock down color scheme
+react dark background #282c34
+twitch dark background main #18181A
+twitch sidebar dark for list items? #202023
+dark input #424243
+dark submit button #2D2D30
+material dark white for list items #F5F5F5
+material white #fff
+material dark background #212121
+material dark foreground #333333
+material button #626980
+
+emotion dark rgb(52, 58, 64)
+ */
+// background: `url(${backgroundMain}) center / cover no-repeat fixed`,

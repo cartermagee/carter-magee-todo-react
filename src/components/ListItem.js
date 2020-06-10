@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { animated } from 'react-spring';
+
 import { CheckSquare, Square, X, Tag } from 'react-feather';
 import {
   itemBackground,
@@ -16,10 +18,11 @@ import ItemTags from './dropdowns/ItemTags';
 import { useOnClickOutside } from '../helpers/useOnClickOutside';
 import { useOnEscapeClose } from '../helpers/useOnEscapeClose';
 
-const ListItemContainer = styled.div`
+const ListItemContainer = styled(animated.div)`
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
 `;
 
 const ListItemInner = styled.div`
@@ -89,6 +92,7 @@ function ListItem({
   todo = {},
   colors = [],
   tags = [],
+  style = {},
   deleteTodo,
   toggleChecked,
   updateTodoName,
@@ -138,7 +142,7 @@ function ListItem({
   useOnEscapeClose(closeDropdown);
 
   return (
-    <ListItemContainer ref={itemRef}>
+    <ListItemContainer ref={itemRef} style={style}>
       <ListItemInner active={openTags}>
         <Checkbox onClick={handleCheck}>
           {checked ? <CheckSquare /> : <Square />}

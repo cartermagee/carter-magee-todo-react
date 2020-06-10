@@ -44,7 +44,7 @@ export const MyThemeProvider = ({ children }) => {
         const mode = e.matches ? 'dark' : 'light';
         setThemeState({ mode });
       });
-  });
+  }, []);
 
   const toggle = () => {
     const mode = themeState.mode === 'light' ? `dark` : `light`;

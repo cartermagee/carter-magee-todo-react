@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 export const ListHeader = styled.header`
   background: rgb(52, 58, 64);
+  border-top-left-radius: 1em;
+  border-top-right-radius: 1em;
   color: #fff;
   display: grid;
   grid-template-rows: 90px 30px 90px;

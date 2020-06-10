@@ -18,6 +18,7 @@ html {
     font-size: 20px;
     margin: 0;
     text-size-adjust: 100%;
+    user-select: none;
     white-space: nowrap;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

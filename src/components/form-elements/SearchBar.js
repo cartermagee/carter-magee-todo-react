@@ -21,7 +21,7 @@ const ClearInputVal = styled(X)`
 
 function SearchBar({ searchTerm = '', handleSearchInput, clearInput }) {
   return (
-    <Form top bottom onSubmit={(e) => e.preventDefault()}>
+    <Form top onSubmit={(e) => e.preventDefault()}>
       <SearchInput
         type="text"
         name="search input"
