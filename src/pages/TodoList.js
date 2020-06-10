@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import clamp from 'lodash-es/clamp';
@@ -16,15 +16,17 @@ const ListItemsContainer = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
-  display: grid;
   height: ${({ height }) => `${height}px` || '100%'};
   & > div {
     position: absolute;
     width: 100%;
     height: 90px;
     overflow: visible;
-    pointer-events: auto;
+    pointer-events: none;
     transform-origin: 50% 50% 0px;
+    &.active {
+      z-index: 1;
+    }
   }
 `;
 // Returns fitting styles for dragged/idle items
@@ -33,14 +35,14 @@ const fn = (order, down, originalIndex, curIndex, y) => (index) =>
     ? {
         y: curIndex * 100 + y,
         scale: 1.1,
-        zIndex: '1',
+        // zIndex: '1',
         shadow: 15,
         immediate: (n) => n === 'y' || n === 'zIndex',
       }
     : {
-        y: order.indexOf(index) * 100,
+        y: order.indexOf(index) * 90,
         scale: 1,
-        zIndex: '0',
+        // zIndex: '0',
         shadow: 1,
         immediate: false,
       };
@@ -62,8 +64,11 @@ function TodoList({
   reorderList,
   todoListRef,
 }) {
+  const [active, setActive] = useState(0);
+
   // const draggableRef = useRef(null);
   const order = useRef(filteredTodos.map((_, index) => index)); // Store indicies as a local ref, this represents the item order
+  // console.log(order.current);
 
   const [springs, setSprings] = useSprings(
     filteredTodos.length,
@@ -77,21 +82,24 @@ function TodoList({
     []
   ); // set new list order on unmount, empty array as second arguement
 
-  const bind = useDrag(({ args: [originalIndex], down, movement: [, y] }) => {
-    const curIndex = order.current.indexOf(originalIndex);
-    const curRow = clamp(
-      Math.round((curIndex * 100 + y) / 100),
-      0,
-      filteredTodos.length - 1
-    );
-    const newOrder = swap(order.current, curIndex, curRow);
-    // setOrderState(newOrder);
-    setSprings(fn(newOrder, down, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
-    if (!down) {
-      order.current = newOrder;
-      // reorderList(newOrder);
-    }
-  });
+  const bind = useDrag(
+    ({ args: [originalIndex], down, movement: [, y], ...rest }) => {
+      setActive(originalIndex);
+      const curIndex = order.current.indexOf(originalIndex);
+      const curRow = clamp(
+        Math.round((curIndex * 90 + y) / 90),
+        0,
+        filteredTodos.length - 1
+      );
+      const newOrder = swap(order.current, curIndex, curRow);
+      // setOrderState(newOrder);
+      setSprings(fn(newOrder, down, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
+      if (!down) {
+        order.current = newOrder;
+      }
+    },
+    { filterTaps: true }
+  );
   return (
     <>
       <Filter
@@ -105,7 +113,7 @@ function TodoList({
         ref={todoListRef}
         className="content"
         filteredTodos={filteredTodos}
-        height={filteredTodos.length * 100}
+        height={filteredTodos.length * 90}
       >
         {!filteredTodos.length ? (
           <Instructions
@@ -118,6 +126,7 @@ function TodoList({
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...bind(i)}
               key={i}
+              className={active === i ? 'active' : ''}
               style={{
                 zIndex,
                 boxShadow: shadow.interpolate(

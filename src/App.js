@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Route } from 'react-router-dom';
 
 import styled from 'styled-components';
@@ -121,6 +121,8 @@ function App() {
   };
 
   const deleteTodo = (todo) => {
+    console.log('delete');
+
     setTodoItems([...todoItems].filter((item) => item !== todo));
   };
 
@@ -335,7 +337,10 @@ function App() {
   const clearInput = () => setSearchTerm('');
 
   useEffect(() => {
+    console.log('in update filtered');
+
     if (!searchTerm) return setFilteredTodos([...todoItems]);
+    console.log('in update filtered 2');
 
     searchTerm.toLowerCase();
     const filteredTodoItems = [...todoItems].filter(({ name }) =>
@@ -365,9 +370,12 @@ function App() {
     );
   };
   /* DRAG REORDERING */
-  const reorderList = (newOrder) => {
-    setTodoItems(newOrder.map((i) => todoItems[i]));
-  };
+  const reorderList = useCallback(
+    (newOrder) => {
+      setTodoItems(newOrder.map((i) => todoItems[i]));
+    },
+    [todoItems]
+  );
 
   return (
     <>
@@ -415,6 +423,8 @@ function App() {
                 toggleChecked={toggleChecked}
                 updateTodoName={updateTodoName}
                 reorderList={reorderList}
+                // order={order}
+                // setOrder={setOrder}
               />
             )}
             exact

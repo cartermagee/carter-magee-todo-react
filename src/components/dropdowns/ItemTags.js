@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { X, Plus } from 'react-feather';
+import { ChevronUp, Plus } from 'react-feather';
 
 import { textColor, inputBackground } from '../../style-utils/theme';
 import Tag from '../Tag';
@@ -16,7 +16,7 @@ const MainContainer = styled.div`
   justify-items: center;
   width: 100%;
   will-change: height, opacity;
-  z-index: 1;
+  z-index: 4;
 `;
 
 const CloseBtn = styled.button.attrs({
@@ -86,7 +86,7 @@ function ItemTags({
           <TitleContainer>
             <Title>Tags</Title>
             <CloseBtn onClick={toggle}>
-              <X />
+              <ChevronUp />
             </CloseBtn>
           </TitleContainer>
           <Expander>

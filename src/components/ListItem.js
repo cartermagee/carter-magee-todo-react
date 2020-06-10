@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { animated } from 'react-spring';
 
 import { CheckSquare, Square, X, Tag } from 'react-feather';
 import {
@@ -18,11 +17,13 @@ import ItemTags from './dropdowns/ItemTags';
 import { useOnClickOutside } from '../helpers/useOnClickOutside';
 import { useOnEscapeClose } from '../helpers/useOnEscapeClose';
 
-const ListItemContainer = styled(animated.div)`
+const ListItemContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
+  pointer-events: auto;
+  z-index: 2;
 `;
 
 const ListItemInner = styled.div`
@@ -32,8 +33,8 @@ const ListItemInner = styled.div`
   cursor: grab;
   display: grid;
   grid-template-columns: 1fr 4fr 1fr;
-  height: 90px;
   width: 100%;
+  height: 90px;
   z-index: 3;
   &:hover {
     background: ${itemBackgroundHover};
@@ -68,7 +69,7 @@ const OptionsContainer = styled.div`
   height: 90%;
   justify-items: center;
   justify-self: center;
-  width: 30px;
+  z-index: 100;
   & button {
     align-items: center;
     border-radius: 5px;
@@ -92,7 +93,6 @@ function ListItem({
   todo = {},
   colors = [],
   tags = [],
-  style = {},
   deleteTodo,
   toggleChecked,
   updateTodoName,
@@ -130,19 +130,19 @@ function ListItem({
   };
 
   const toggleOpenTags = () => {
-    closeDropdown();
     setOpenTags(!openTags);
   };
+
   const toggleOpenColors = () => {
-    closeDropdown();
     setOpenColors(!openColors);
   };
   const itemRef = useRef();
+
   useOnClickOutside(itemRef, closeDropdown);
   useOnEscapeClose(closeDropdown);
 
   return (
-    <ListItemContainer ref={itemRef} style={style}>
+    <ListItemContainer>
       <ListItemInner active={openTags}>
         <Checkbox onClick={handleCheck}>
           {checked ? <CheckSquare /> : <Square />}
@@ -154,32 +154,34 @@ function ListItem({
           <OptionsBtn onClick={confirmDelete}>
             <X />
           </OptionsBtn>
-          <OptionsBtn onClick={toggleOpenColors}>
+          <OptionsBtn onClick={() => !openColors && toggleOpenColors()}>
             <ColorIndicator color={color} />
           </OptionsBtn>
-          <OptionsBtn onClick={toggleOpenTags}>
+          <OptionsBtn onClick={() => !openTags && toggleOpenTags()}>
             <Tag />
           </OptionsBtn>
         </OptionsContainer>
       </ListItemInner>
-      <ItemTags
-        open={openTags}
-        itemTags={itemTags}
-        tags={tags}
-        toggle={toggleOpenTags}
-        confirmUpdateTagName={confirmUpdateTagName}
-        handleAssign={handleAssign}
-        handleRemoveAttribute={handleRemoveAttribute}
-      />
-      <ItemColor
-        open={openColors}
-        itemColor={color}
-        colors={colors}
-        toggle={toggleOpenColors}
-        confirmUpdateTagName={confirmUpdateTagName}
-        handleAssign={handleAssign}
-        handleRemoveAttribute={handleRemoveAttribute}
-      />
+      <div ref={itemRef}>
+        <ItemTags
+          open={openTags}
+          itemTags={itemTags}
+          tags={tags}
+          toggle={toggleOpenTags}
+          confirmUpdateTagName={confirmUpdateTagName}
+          handleAssign={handleAssign}
+          handleRemoveAttribute={handleRemoveAttribute}
+        />
+        <ItemColor
+          open={openColors}
+          itemColor={color}
+          colors={colors}
+          toggle={toggleOpenColors}
+          confirmUpdateTagName={confirmUpdateTagName}
+          handleAssign={handleAssign}
+          handleRemoveAttribute={handleRemoveAttribute}
+        />
+      </div>
     </ListItemContainer>
   );
 }
