@@ -337,10 +337,7 @@ function App() {
   const clearInput = () => setSearchTerm('');
 
   useEffect(() => {
-    console.log('in update filtered');
-
     if (!searchTerm) return setFilteredTodos([...todoItems]);
-    console.log('in update filtered 2');
 
     searchTerm.toLowerCase();
     const filteredTodoItems = [...todoItems].filter(({ name }) =>
