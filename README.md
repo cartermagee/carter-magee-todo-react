@@ -1,7 +1,7 @@
 # carter-magee-todo-react
 good ole to-do list! built in react
 
-##Technology used
+## Technology used
 * react
 * create-react-app
 * styled-components
